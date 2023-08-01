@@ -11,3 +11,10 @@ yarn dev
 # or
 pnpm dev
 ```
+
+## Note 
+
+```bash
+npx prisma generate -> generate object prisma
+npx prisma migrate dev -> exec db migration dev env
+```

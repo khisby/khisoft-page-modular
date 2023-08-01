@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Component {
+  id         Int       @id @default(autoincrement())
+  serial     String    @unique
+  name       String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  details    ComponentDetail[]
+  pageComponents PageComponent[]
+}
+
+model ComponentDetail {
+  id             Int       @id @default(autoincrement())
+  serial         String    @unique
+  name           String
+  type           String
+  defaultValue   String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  componentSerial String
+  component      Component @relation(fields: [componentSerial], references: [serial])
+  pageComponentDetails PageComponentDetail[]
+}
+
+model Page {
+  id         Int       @id @default(autoincrement())
+  serial     String    @unique
+  path       String
+  properties Json 
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  pageComponents PageComponent[]
+}
+
+model PageComponent {
+  id         Int       @id @default(autoincrement())
+  serial     String    @unique
+  pageSerial       String
+  componentSerial  String
+  sequence         Int
+  isActive         Boolean
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  page             Page      @relation(fields: [pageSerial], references: [serial])
+  component        Component @relation(fields: [componentSerial], references: [serial])
+  pageComponentDetails PageComponentDetail[]
+}
+
+model PageComponentDetail {
+  id         Int       @id @default(autoincrement())
+  serial     String    @unique
+  pageComponentSerial   String
+  componentDetailSerial String
+  value                 String
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  pageComponent         PageComponent @relation(fields: [pageComponentSerial], references: [serial])
+  componentDetail       ComponentDetail @relation(fields: [componentDetailSerial], references: [serial])
+}
